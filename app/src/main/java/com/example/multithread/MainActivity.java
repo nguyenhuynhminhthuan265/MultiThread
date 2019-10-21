@@ -2,6 +2,7 @@ package com.example.multithread;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -11,21 +12,20 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MainActivity extends AppCompatActivity {
+import java.text.DecimalFormat;
+
+public class MainActivity extends Activity {
     ProgressBar myBarHorizontal;
 
 
     EditText txtDataBox;
     TextView txtPercent;
     Button btnDoItAgain;
-    int progressStep = 10;
-    final int MAX_PROGRESS = 100;
+    int progressStep = 1;
+    int MAX_PROGRESS = 0;
     int globalVar = 0;
-    int accum;
+    int accum=1;
 
-    {
-        accum = 0;
-    }
     long startingMills = System.currentTimeMillis();
     boolean isRunning = false;
     String PATIENCE = "Some important data is being collected now. "
@@ -39,11 +39,12 @@ public class MainActivity extends AppCompatActivity {
         txtDataBox=findViewById(R.id.edtInput);
         btnDoItAgain=findViewById(R.id.btnClick);
         myBarHorizontal=findViewById(R.id.progressBar);
-
         txtPercent=findViewById(R.id.txtPercent);
+
         btnDoItAgain.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                MAX_PROGRESS=Integer.valueOf(txtDataBox.getText().toString());
                 onStart();
             }
         });
@@ -52,16 +53,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        btnDoItAgain.setEnabled(false);
+        if (MAX_PROGRESS>0) {
+            btnDoItAgain.setEnabled(false);
 // reset and show progress bars
-        accum = 0;
-        myBarHorizontal.setMax(MAX_PROGRESS);
-        myBarHorizontal.setProgress(0);
-        myBarHorizontal.setVisibility(View.VISIBLE);
+            accum = 0;
+            myBarHorizontal.setMax(MAX_PROGRESS);
+            myBarHorizontal.setProgress(0);
+            myBarHorizontal.setVisibility(View.VISIBLE);
 
 // create-start background thread were the busy work will be done
-        Thread myBackgroundThread = new Thread( backgroundTask, "backAlias1" );
-        myBackgroundThread.start();
+
+            Thread myBackgroundThread = new Thread(backgroundTask, "backAlias1");
+            myBackgroundThread.start();
+        }
     }
 
     private Runnable foregroundRunnable = new Runnable() {
@@ -73,10 +77,12 @@ public class MainActivity extends AppCompatActivity {
 // advance ProgressBar
                 myBarHorizontal.incrementProgressBy(progressStep);
                 accum += progressStep;
-                txtPercent.setText(accum+"%");
+                DecimalFormat df = new DecimalFormat("0.00");
+                double showPercent=(double) accum/(double)MAX_PROGRESS*100;
+                txtPercent.setText(df.format(showPercent)+"%");
 
 // are we done yet?
-                if (accum >= myBarHorizontal.getMax()) {
+                if (accum >= MAX_PROGRESS) {
 
                     myBarHorizontal.setVisibility(View.INVISIBLE);
                     accum=0;
@@ -92,9 +98,9 @@ public class MainActivity extends AppCompatActivity {
         public void run() {
 // busy work goes here...
             try {
-                for (int n = 0; n < 10; n++) {
+                for (int n = 0; n < MAX_PROGRESS; n++) {
 // this simulates 1 sec. of busy activity
-                    Thread.sleep(1000);
+                    Thread.sleep(100);
 // change a global variable here...
                     globalVar++;
 // try: next two UI operations should NOT work

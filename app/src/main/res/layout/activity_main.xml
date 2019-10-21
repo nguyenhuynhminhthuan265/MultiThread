@@ -9,17 +9,39 @@
   <LinearLayout
       android:layout_width="match_parent"
       android:layout_height="match_parent"
-      android:orientation="vertical">
+      android:orientation="vertical"
+      android:layout_marginTop="20dp"
+      android:layout_marginBottom="20dp"
+      android:layout_marginHorizontal="10dp">
 
       <EditText
           android:id="@+id/edtInput"
-          android:layout_width="wrap_content"
-          android:layout_height="100dp" />
+          android:layout_width="match_parent"
+          android:layout_height="100dp"
+          android:hint="INPUT MAX_PROGRESS HERE!"
+          android:inputType="number"
+          android:textAlignment="center"
+          android:background="#A5F1A9"/>
 
+      <LinearLayout
+          android:layout_width="match_parent"
+          android:layout_height="50dp"
+          android:layout_marginVertical="20dp">
+      <TextView
+          android:layout_width="0dp"
+          android:layout_weight="1"
+          android:layout_height="match_parent"
+          android:text="Percent:"
+          android:textAlignment="center"
+          android:textSize="30sp"
+          />
       <TextView
           android:id="@+id/txtPercent"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content" />
+          android:layout_width="0dp"
+          android:layout_weight="2"
+          android:layout_height="match_parent"
+          android:textSize="30sp"/>
+      </LinearLayout>
 
       <ProgressBar
           android:id="@+id/progressBar"
@@ -32,7 +54,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:text="Do it again!"
-
+          android:textAlignment="center"
           />
 
 
